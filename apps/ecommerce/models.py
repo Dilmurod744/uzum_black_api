@@ -47,6 +47,17 @@ class Product(Model):
     def __str__(self):
         return self.name
 
+    def decrease_stock(self, quantity):
+        if self.amount >= quantity:
+            self.amount -= quantity
+            self.save()
+        else:
+            raise ValueError("Not enough stock")
+
+    def increase_stock(self, quantity):
+        self.amount += quantity
+        self.save()
+
 
 class Cart(Model):
     class CartStatus(TextChoices):
@@ -67,16 +78,6 @@ class Order(BaseModel):
     cart = ForeignKey('ecommerce.Cart', CASCADE)
     product = ForeignKey('ecommerce.Product', CASCADE)
 
-
-    # @staticmethod
-    # def create_order(buyer,cart,product):
-    #     order = Order()
-    #     order.user = buyer
-    #     order.cart = cart
-    #     order.product = product
-    #     order.save()
-    #     return order
-
     def __str__(self):
         return f"{self.product.name}"
 
@@ -87,4 +88,3 @@ class Wishlist(Model):
 
     def __str__(self):
         return f'{self.product}'
-
